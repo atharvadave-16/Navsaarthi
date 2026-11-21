@@ -1,4 +1,4 @@
-# Product Requirements Document (PRD): MatsyaGuard
+# Product Requirements Document (PRD): NavSaarthi
 **Tagline:** NavIC-Enabled Coastal Safety, Geofencing & Offline Emergency Navigation for Indian Fishermen  
 **Event:** ASTRA 2026 — ANTERiX Club, VIT Bhopal University (21–22 November 2026)  
 **Primary Domain:** `04 | Satellite Communication, Navigation & Connectivity`  
@@ -7,7 +7,7 @@
 ---
 
 ## 1. Executive Summary
-**MatsyaGuard** is a live, deployed web-based simulation and emergency coordination platform designed to protect Indian coastal fishermen operating beyond the ~15 km terrestrial cellular network boundary. By combining **ISRO’s NavIC Messaging Service** model, **ISRO Bhuvan** coastal mapping, **MOSDAC** ocean/cyclone hazard data, and **INCOIS** Potential Fishing Zone (PFZ) & landing centre datasets, MatsyaGuard prevents accidental International Maritime Boundary Line (IMBL) crossings and provides life-saving storm evacuation routing in zero-network ocean zones.
+**NavSaarthi** is a live, deployed web-based simulation and emergency coordination platform designed to protect Indian coastal fishermen operating beyond the ~15 km terrestrial cellular network boundary. By combining **ISRO’s NavIC Messaging Service** model, **ISRO Bhuvan** coastal mapping, **MOSDAC** ocean/cyclone hazard data, and **INCOIS** Potential Fishing Zone (PFZ) & landing centre datasets, MatsyaGuard prevents accidental International Maritime Boundary Line (IMBL) crossings and provides life-saving storm evacuation routing in zero-network ocean zones.
 
 ### Why This Aligns with ASTRA 2026 Evaluation Priorities
 * **Meaningful ISRO Integration:** Directly models India's indigenous **NavIC** maritime short-message capability alongside **Bhuvan**, **MOSDAC**, and **INCOIS** datasets.
@@ -31,7 +31,7 @@ Over 4 million coastal fishermen in India venture 15–50+ km offshore daily. Be
 ---
 
 ## 3. Solution Overview: Dual-Interface Architecture
-To demonstrate end-to-end satellite communication convincingly during the hackathon, MatsyaGuard operates as a **single deployed web application with two synchronized views** (viewable side-by-side in split-screen mode or toggled via tabs):
+To demonstrate end-to-end satellite communication convincingly during the hackathon, NavSaarthi operates as a **single deployed web application with two synchronized views** (viewable side-by-side in split-screen mode or toggled via tabs):
 
 1. **Coast Guard Command Dashboard (Shore View):**
    * Interactive coastal map displaying real Indian maritime zones, the IMBL boundary line, INCOIS Potential Fishing Zones (PFZs), Safe Harbors (Fish Landing Centres), and toggleable MOSDAC Cyclone/High-Wave polygons.
