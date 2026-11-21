@@ -24,3 +24,5 @@ After one online visit the app is cached (service worker) and opens with no inte
 ## Data
 
 Coastline, IMBL, harbours, PFZ and cyclone are hand-drawn **sample data** around the Palk Strait, not official. Real sources to plug in later: ISRO Bhuvan, MOSDAC, INCOIS, NavIC documentation.
+currently deployed on https://navsaarthi.onrender.com/fisherman
+  
