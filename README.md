@@ -12,8 +12,8 @@ Navsaarthi shows how fishermen who sail beyond mobile coverage could still recei
 
 | Screen | URL |
 |---|---|
-| Home | `https://navsaarthi.onrender.com/` |
-| Fisherman app (open on a phone) | `https:/navsaarthi.onrender.com<your-render-url>/fisherman` |
+| Home | `https://navsaarthi.onrender.com` |
+| Fisherman app (open on a phone) | `https://navsaarthi.onrender.com/fisherman` |
 | Coast Guard dashboard (open on a laptop) | `https://navsaarthi.onrender.com/coastguard` |
 
 Source code: https://github.com/atharvadave-16/Navsaarthi
@@ -184,8 +184,26 @@ Every push to `main` redeploys automatically. Use `/healthz` as a quick check th
 
 ## Data and attribution
 
-- The coastline, IMBL, harbours, PFZ areas and cyclone are **hand-drawn sample data** around the Palk Strait (Tamil Nadu). They are simplified, not survey-accurate, and the IMBL line is **not** an official boundary.
-- Planned real sources to replace the samples: **ISRO Bhuvan** (coastal layers), **ISRO MOSDAC** (weather and cyclone information), **INCOIS** (Potential Fishing Zones, fish landing centres), and **ISRO NavIC** technical documentation.
+### What the prototype uses today
+
+The coastline, IMBL, harbours, PFZ areas and cyclone are **hand-drawn sample data** around the Palk Strait (Tamil Nadu), stored in `src/data/geo.js`. They are simplified, not survey-accurate, and the IMBL line is **not** an official boundary. The cyclone is a fixed demo storm (one centre point with warning and critical radii). None of this is fetched from the sources below.
+
+### How real data would replace the hardcoded simulation
+
+The app is built so each simulated layer can be swapped for a real dataset without changing the alert logic. The alert, geofencing and routing code only needs the same shapes (lines, polygons, points).
+
+| Layer in the app | Today (simulated) | Planned real source |
+|---|---|---|
+| Coastline and 15 km coverage band | Hand-drawn line | **ISRO Bhuvan** coastal and geographical layers |
+| Cyclone and high-wave hazard zones | One fixed circle | **ISRO MOSDAC** weather and cyclone information |
+| Potential Fishing Zones | Two sample rectangles | **INCOIS** PFZ advisories |
+| Safe harbours and landing points | Five sample points | **INCOIS** fish landing centre information |
+| Satellite short messages | Made-up `NS\|...` packets | **ISRO NavIC** technical documentation, and real NavIC-capable hardware |
+
+Where a live feed is not available, downloaded GeoJSON files from these sources (for example a past cyclone track) can be loaded instead and clearly labelled as historical data.
+
+> Using these sources depends on their data access terms, registration and available formats, and has not been integrated or verified in this prototype. The prototype does **not** use real government warnings and does **not** claim to be connected to any of these systems.
+
 - Map tiles: © OpenStreetMap contributors.
 
 ## Limitations
@@ -198,8 +216,9 @@ Every push to `main` redeploys automatically. Use `/healthz` as a quick check th
 
 ## Future work
 
-- Replace sample data with real Bhuvan, INCOIS and MOSDAC layers
+- Replace the hardcoded sample data with real ISRO Bhuvan, MOSDAC and INCOIS layers (see the table above)
 - Integrate with real NavIC-capable messaging hardware
 - Use real GPS on the fisherman's device
 - Persistent storage and user accounts
 - More cyclone and high-wave sources, and more languages
+
