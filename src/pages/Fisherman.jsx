@@ -7,6 +7,7 @@ import { LANGS, t, tType } from '../lib/i18n.js'
 import { speak } from '../lib/speech.js'
 import ControlPad from '../components/shared/ControlPad.jsx'
 import ModeBadge, { SimNotice } from '../components/shared/ModeBadge.jsx'
+import LinkStatus from '../components/shared/LinkStatus.jsx'
 
 const THEME = {
   safe: { bg: 'bg-emerald-500/15 border-emerald-400 text-emerald-300', Icon: CheckCircle2, key: 'safe' },
@@ -39,6 +40,8 @@ export default function Fisherman() {
           {LANGS.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
         </select>
       </header>
+
+      <LinkStatus />
 
       <section className={`flex items-center gap-4 rounded-2xl border-2 p-5 ${theme.bg}`}>
         <theme.Icon className="h-14 w-14 shrink-0" />

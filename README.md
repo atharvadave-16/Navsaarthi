@@ -1,27 +1,26 @@
 # Navsaarthi
 
-Satellite-assisted coastal safety prototype for Indian fishermen. **Everything here is simulated.** The NavIC messages are made-up packets, not real satellite transmissions, and nothing is connected to the Coast Guard or any government system.
+Satellite-assisted coastal safety prototype for Indian fishermen. **Everything here is simulated.** NavIC messages are made-up packets, not real satellite transmissions, and nothing is connected to the Coast Guard or any government system.
 
-## Run
+## Run locally
 
 ```bash
 npm install
-npm run dev     # http://localhost:5173
-npm test        # geo + packet tests
-npm run build
+npm run dev:all        # relay server (3001) + Vite (5173, reachable on your Wi-Fi)
 ```
+- Same laptop: open `http://localhost:5173/fisherman` and `/coastguard`.
+- Two devices on the same Wi-Fi: open `http://<laptop-ip>:5173/fisherman` on the phone and `/coastguard` on the laptop.
 
-Open `/fisherman` and `/coastguard` in **two tabs of the same browser**. They sync through BroadcastChannel.
+## Deploy (one Render Web Service)
 
-## Demo sequence
+Build: `npm install && npm run build` · Start: `npm start` · Env: `NODE_VERSION=22`
 
-1. Fisherman tab: boat starts near the coast on 4G.
-2. Press the east arrow a few times. Past 15 km it flips to NavIC-only (simulated) on both screens.
-3. Keep going east. Warning within 5 km of the IMBL, critical within 2 km or once crossed. A simulated packet like `NS|ALT|IMBL|1.8KM|PRIO:1` appears with its decoded text.
-4. Coast Guard tab: click Activate Cyclone Alert. Vessels in the zones are flagged and packets are logged.
-5. Fisherman tab: press SOS, choose type and crew, send.
-6. Coast Guard tab: SOS log, red vessel and a route to the nearest harbour that avoids the cyclone.
+The server serves the built app and relays state over WebSocket (`/ws`), so any two devices on the live URL stay in sync.
+
+## Offline
+
+After one online visit the app is cached (service worker) and opens with no internet. Geofencing, alerts, voice and harbour guidance run on the device. Changes made while the link is down are queued and sent when it returns. Real satellite messaging needs NavIC-capable hardware, which this web prototype only simulates.
 
 ## Data
 
-Coastline, IMBL, harbours, PFZ and cyclone are hand-drawn **sample data** around the Palk Strait, not official. Real sources to plug in later: ISRO Bhuvan, ISRO MOSDAC, INCOIS, ISRO NavIC documentation.
+Coastline, IMBL, harbours, PFZ and cyclone are hand-drawn **sample data** around the Palk Strait, not official. Real sources to plug in later: ISRO Bhuvan, MOSDAC, INCOIS, NavIC documentation.

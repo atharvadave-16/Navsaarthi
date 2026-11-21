@@ -8,6 +8,7 @@ import { COVERAGE, nearestHarbour } from '../lib/geo.js'
 import { decode, parse } from '../lib/navic.js'
 import ControlPad from '../components/shared/ControlPad.jsx'
 import ModeBadge, { SimNotice } from '../components/shared/ModeBadge.jsx'
+import LinkStatus from '../components/shared/LinkStatus.jsx'
 
 const COLORS = { safe4g: '#22d3ee', safeNavic: '#818cf8', warning: '#f59e0b', critical: '#ef4444' }
 const colorOf = (v) => (v.sos || v.risk === 'critical' ? COLORS.critical : v.risk === 'warning' ? COLORS.warning : v.mode === 'NAVIC' ? COLORS.safeNavic : COLORS.safe4g)
@@ -41,7 +42,7 @@ export default function CoastGuard() {
     <main className="flex min-h-screen flex-col gap-3 p-3">
       <header className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="flex items-center gap-2 text-xl font-bold"><ShieldAlert className="h-6 w-6 text-cyan-400" /> Navsaarthi · Coast Guard Command <span className="rounded bg-amber-500/20 px-2 py-0.5 text-xs text-amber-300">SIMULATION</span></h1>
-        <ModeBadge mode={main.mode} />
+        <div className="flex items-center gap-2"><LinkStatus /><ModeBadge mode={main.mode} /></div>
       </header>
 
       <section className="grid grid-cols-2 gap-2 lg:grid-cols-4">
@@ -54,7 +55,7 @@ export default function CoastGuard() {
       <div className="grid flex-1 gap-3 lg:grid-cols-3">
         <section className="h-[60vh] overflow-hidden rounded-xl border border-slate-700 lg:col-span-2 lg:h-auto lg:min-h-[560px]">
           <MapContainer center={[9.65, 79.4]} zoom={9} className="h-full w-full">
-            <TileLayer className="dark-tiles" attribution='&copy; OpenStreetMap contributors' url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+            <TileLayer className="dark-tiles" attribution='&copy; OpenStreetMap contributors' url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <GeoJSON data={COVERAGE} style={{ color: '#22d3ee', weight: 1, fillOpacity: 0.08, dashArray: '2 4' }} />
             <GeoJSON data={COAST} style={{ color: '#94a3b8', weight: 2 }} />
             <GeoJSON data={IMBL} style={{ color: '#ef4444', weight: 3, dashArray: '10 6' }} />

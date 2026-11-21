@@ -2,10 +2,12 @@ import { create } from 'zustand'
 import { assess, nearestHarbour, clampToBounds } from '../lib/geo.js'
 import { encode } from '../lib/navic.js'
 import { START_MAIN, BOUNDS } from '../data/geo.js'
+import { startSync, send } from '../lib/sync.js'
 
-// Both dashboards share state through BroadcastChannel (works across tabs of the same browser).
-const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('navsaarthi-sync') : null
 const uid = () => Math.random().toString(36).slice(2, 8)
+const TAB = uid()
+let lastSeq = -1
+let lastSeen = 0
 const now = () => new Date().toLocaleTimeString()
 
 const makeVessel = (id, lng, lat, heading) => ({
@@ -27,6 +29,8 @@ const initialData = () => ({
   packets: [],
   sos: [],
   lang: 'en',
+  simOwner: null, // which screen currently moves the other vessels
+  simSeq: 0,
 })
 const DATA_KEYS = Object.keys(initialData())
 
@@ -43,8 +47,8 @@ function reassess(v, cycloneActive) {
 }
 
 export const useStore = create((set, get) => {
-  // apply locally and tell the other tab
-  const patch = (p) => { set(p); channel?.postMessage({ type: 'patch', p }) }
+  // apply locally and share with other tabs/devices
+  const patch = (p) => { set(p); send({ type: 'patch', p }) }
   const withPackets = (list) => [...list, ...get().packets].slice(0, 60)
 
   return {
@@ -60,9 +64,13 @@ export const useStore = create((set, get) => {
     },
     moveMain: (dLng, dLat) => get().setMain(get().main.lng + dLng, get().main.lat + dLat),
 
-    // Other vessels drift around. Run from the Coast Guard tab only.
+    // Other vessels drift around. Only one Coast Guard screen at a time runs this (a simple lease).
     tick: () => {
       const s = get()
+      if (s.simOwner !== TAB) {
+        if (s.simSeq !== lastSeq) { lastSeq = s.simSeq; lastSeen = Date.now(); return }
+        if (Date.now() - lastSeen < 4000) return
+      }
       let newPackets = []
       const vessels = s.vessels.map((v) => {
         if (v.sos) return v
@@ -77,7 +85,7 @@ export const useStore = create((set, get) => {
         newPackets = newPackets.concat(r.packets)
         return r.vessel
       })
-      patch({ vessels, packets: withPackets(newPackets) })
+      patch({ vessels, packets: withPackets(newPackets), simOwner: TAB, simSeq: s.simSeq + 1 })
     },
 
     toggleCyclone: () => {
@@ -110,14 +118,12 @@ export const useStore = create((set, get) => {
   }
 })
 
-// receive updates from the other tab
-if (channel) {
-  channel.onmessage = ({ data }) => {
-    if (data.type === 'patch') useStore.setState(data.p)
-    else if (data.type === 'hello') {
-      const s = useStore.getState()
-      channel.postMessage({ type: 'snapshot', s: Object.fromEntries(DATA_KEYS.map((k) => [k, s[k]])) })
-    } else if (data.type === 'snapshot') useStore.setState(data.s)
+// receive updates from other tabs/devices
+startSync((m) => {
+  if (m.type === 'patch') useStore.setState(m.p)
+  else if (m.type === 'snapshot') useStore.setState(m.s)
+  else if (m.type === 'hello') {
+    const s = useStore.getState()
+    send({ type: 'snapshot', s: Object.fromEntries(DATA_KEYS.map((k) => [k, s[k]])) })
   }
-  channel.postMessage({ type: 'hello' }) // ask any open tab for the current state
-}
+})
